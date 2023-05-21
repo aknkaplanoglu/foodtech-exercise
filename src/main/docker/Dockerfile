@@ -1,7 +1,7 @@
 FROM alpine
 
 RUN apk update && apk upgrade
-RUN apk add openjdk8=8.252.09-r0
+RUN apk add openjdk8-jre
 MAINTAINER akn.kaplanoglu@gmail.com
 
 ARG JAR_FILE=*.jar
