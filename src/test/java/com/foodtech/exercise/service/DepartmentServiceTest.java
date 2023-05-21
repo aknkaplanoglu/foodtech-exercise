@@ -4,6 +4,7 @@ import com.foodtech.exercise.dto.request.DepartmentRequest;
 import com.foodtech.exercise.exception.ResourceNotFoundException;
 import com.foodtech.exercise.model.Department;
 import com.foodtech.exercise.repository.DepartmentRepository;
+import com.foodtech.exercise.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +24,9 @@ class DepartmentServiceTest {
 
     @Mock
     private DepartmentRepository departmentRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private DepartmentService departmentService;
@@ -131,14 +135,13 @@ class DepartmentServiceTest {
         department.setId(departmentId);
         department.setName("Dep 1");
 
-        when(departmentRepository.findById(departmentId)).thenReturn(Optional.of(department));
+        when(departmentRepository.existsById(departmentId)).thenReturn(true);
 
         // Execute
         departmentService.delete(departmentId);
 
         // Verify
-        verify(departmentRepository, times(1)).findById(departmentId);
-        verify(departmentRepository, times(1)).delete(department);
+        verify(departmentRepository, times(1)).existsById(departmentId);
     }
 
     @Test
@@ -146,11 +149,11 @@ class DepartmentServiceTest {
         // Prepare
         Long departmentId = 1L;
 
-        when(departmentRepository.findById(departmentId)).thenReturn(Optional.empty());
+        when(departmentRepository.existsById(departmentId)).thenReturn(false);
 
         // Execute and Verify
         assertThrows(ResourceNotFoundException.class, () -> departmentService.delete(departmentId));
-        verify(departmentRepository, times(1)).findById(departmentId);
+        verify(departmentRepository, times(1)).existsById(departmentId);
         verify(departmentRepository, never()).delete(any());
     }
 
